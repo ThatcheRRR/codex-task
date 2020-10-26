@@ -1,6 +1,12 @@
 const fileElem = document.querySelector('input');
+const mainColor = 'x';
 let arr = [];
 let field = [];
+let w = null;
+let h = null;
+let fillColor = null;
+let cordX = null;
+let cordY = null;
 let canDraw = false;
 
 fileElem.addEventListener('change', e => {
@@ -46,8 +52,8 @@ function createCanvas(canvas) {
     canDraw = false;
   } else {
     canDraw = true;
-    const w = +canvas[1];
-    const h = +canvas[2];
+    w = +canvas[1];
+    h = +canvas[2];
     for(let i = 0; i < h + 2; i++) {
       field.push(new Array(w + 2));
     }
@@ -78,13 +84,11 @@ function drawLine(line) {
 }
 
 function drawRect(rect) {
-  console.log(rect);
   const x1 = +rect[1];
   const y1 = +rect[2];
   const x2 = +rect[3];
   const y2 = +rect[4];
   let i = y1;
-  let j = x1;
   while(i <= y2) {
     field[i].splice(x1, 1, 'x');
     field[i].splice(x2, 1, 'x');
@@ -96,5 +100,29 @@ function drawRect(rect) {
 }
 
 function bucketFill(bucket) {
+  console.log(bucket);
+  const x = +bucket[1];
+  const y = +bucket[2];
+  fillColor = bucket[3];
+  cordX = x;
+  cordY = y;
+  floodFill(x, y);
+}
 
+function floodFill(x, y) {
+  if(field[y][x] !== mainColor) {
+    field[y][x] = fillColor;
+    if (x > 1 && x <= cordX) {
+      floodFill(x - 1, y);
+    }
+    if (y > 1 && y <= cordY) {
+      floodFill(x, y - 1);
+    }
+    if (x >= cordX && x < w) {
+      floodFill(x + 1, y);
+    }
+    if (y >= cordY && y < h) {
+      floodFill(x, y + 1);
+    }
+  }
 }
