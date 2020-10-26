@@ -100,7 +100,6 @@ function drawRect(rect) {
 }
 
 function bucketFill(bucket) {
-  console.log(bucket);
   const x = +bucket[1];
   const y = +bucket[2];
   fillColor = bucket[3];
