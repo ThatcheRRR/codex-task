@@ -42,7 +42,6 @@ fileElem.addEventListener('change', e => {
     }
     const toString = field.map(item => item.join(''));
     const output = toString.join('\n');
-    console.log(output)
     document.body.insertAdjacentHTML('beforeend', `<a href = 'data:text/plain;charset=utf-8,%EF%BB%BF${encodeURIComponent(output)}' download = 'output.txt'>output.txt</a>`);
   };
 });
@@ -67,45 +66,51 @@ function createCanvas(canvas) {
 }
 
 function drawLine(line) {
-  const x1 = +line[1];
-  const y1 = +line[2];
-  const x2 = +line[3];
-  const y2 = +line[4];
-  if(x1 === x2) {
-    let i = y1;
-    while(i <= y2) {
-      field[i].splice(x1, 1, 'x');
-      i++;
+  if(canDraw) {
+    const x1 = +line[1];
+    const y1 = +line[2];
+    const x2 = +line[3];
+    const y2 = +line[4];
+    if(x1 === x2) {
+      let i = y1;
+      while(i <= y2) {
+        field[i].splice(x1, 1, 'x');
+        i++;
+      }
+    } else {
+      const diff = x2 - x1 + 1;
+      field[y1].splice(x1, diff, ...'x'.repeat(diff).split(''));
     }
-  } else {
-    const diff = x2 - x1 + 1;
-    field[y1].splice(x1, diff, ...'x'.repeat(diff).split(''));
   }
 }
 
 function drawRect(rect) {
-  const x1 = +rect[1];
-  const y1 = +rect[2];
-  const x2 = +rect[3];
-  const y2 = +rect[4];
-  let i = y1;
-  while(i <= y2) {
-    field[i].splice(x1, 1, 'x');
-    field[i].splice(x2, 1, 'x');
-    i++;
+  if(canDraw) {
+    const x1 = +rect[1];
+    const y1 = +rect[2];
+    const x2 = +rect[3];
+    const y2 = +rect[4];
+    let i = y1;
+    while(i <= y2) {
+      field[i].splice(x1, 1, 'x');
+      field[i].splice(x2, 1, 'x');
+      i++;
+    }
+    const diff = x2 - x1 + 1;
+    field[y1].splice(x1, diff, ...'x'.repeat(diff).split(''));
+    field[y2].splice(x1, diff, ...'x'.repeat(diff).split(''));
   }
-  const diff = x2 - x1 + 1;
-  field[y1].splice(x1, diff, ...'x'.repeat(diff).split(''));
-  field[y2].splice(x1, diff, ...'x'.repeat(diff).split(''));
 }
 
 function bucketFill(bucket) {
-  const x = +bucket[1];
-  const y = +bucket[2];
-  fillColor = bucket[3];
-  cordX = x;
-  cordY = y;
-  floodFill(x, y);
+  if(canDraw) {
+    const x = +bucket[1];
+    const y = +bucket[2];
+    fillColor = bucket[3];
+    cordX = x;
+    cordY = y;
+    floodFill(x, y);
+  }
 }
 
 function floodFill(x, y) {
